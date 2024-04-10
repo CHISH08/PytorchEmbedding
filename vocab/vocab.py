@@ -3,28 +3,12 @@ class Vocab(torch.nn.Module):
     '''
     Словарь эмбеддингов
     '''
-    def __init__(self, word, embedding_size, pretrained, windows_size, device):
+    def __init__(self, word, embedding_size, device='cpu'):
         super().__init__()
-        self.vocab = {}
-        # if pretrained:
-        #     import pickle
-        #     with open(pretrained, 'rb') as file:
-        #         self.vocab, W_old = pickle.load(file)
-
+        uniq_word = list(set(word))
+        self.vocab = {uniq_word[i]: i for i in range(len(uniq_word))}
         self.size = len(self.vocab)
-        self.text = []
-        for wrd in word:
-            if wrd not in self.vocab:
-                self.vocab[wrd] = self.size
-                self.size += 1
-            self.text.append(self.vocab[wrd])
-
-        self.text = torch.tensor(self.text, dtype=torch.int64)
         self.W = torch.nn.Embedding(self.size, embedding_size, device=device)
-
-        # if pretrained:
-        #     with torch.no_grad():
-        #         self.W.weight[:W_old.shape[0], :W_old.shape[1]] = W_old.to(device)
 
     def __len__(self):
         return self.size
@@ -35,13 +19,12 @@ class Vocab(torch.nn.Module):
         '''
         return self.W(word_idx_list)
 
-    def __getitem__(self, word):
-        return self.vocab[word]
+    def text_to_idx(self, word):
+        '''
+        Превращает строки текста в индексы
+        '''
+        return torch.tensor([self.vocab[elem] for elem in word], dtype=torch.int64)
 
-    def save(self, file_name):
-        '''
-        Сохранить параметры модели
-        '''
-        import pickle
-        with open(file_name, 'rb') as file:
-            pickle.dump((self.vocab, self.W), file)
+    def __getitem__(self, word):
+        word_idx = self.vocab.get(word)
+        return word_idx
