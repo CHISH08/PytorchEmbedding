@@ -12,14 +12,15 @@ class CBOW(nn.Module):
     '''
     Реализация модели CBOW
     '''
-    def __init__(self, text, embedding_size=100, windows_size=1, lr=0.005, device='cpu', hs=False):
+    def __init__(self, text, embedding_size=100, windows_size=1, lr=0.005, device='cpu', hs=False, bias=True):
         super().__init__()
         self.device = device
         self.windows_size = windows_size
         self.embedding_size = embedding_size
         self.hs = hs
+        self.bias = bias
         self.vocab = Vocab(text, embedding_size, device)
-        self.linear = nn.Linear(embedding_size, len(self.vocab), device=self.device)
+        self.linear = nn.Linear(embedding_size, len(self.vocab), device=self.device, bias=bias)
         self.optim = torch.optim.Adam(self.parameters(), lr=lr)
         if hs:
             self.loss = nn.BCEWithLogitsLoss(reduction='sum')
@@ -43,9 +44,9 @@ class CBOW(nn.Module):
             all_vecs = self.vocab.W(full_range)
             all_vecs = all_vecs / all_vecs.norm(dim=-1, keepdim=True)
 
-            if len(word_vec.shape) == 1:
-                word_vec = word_vec.unsqueeze(0)
-            
+            # if len(word_vec.shape) == 1:
+            #     word_vec = word_vec.unsqueeze(0)
+
             cosine_similarity = torch.mm(all_vecs, word_vec.t()).squeeze()
             distances = 1 - cosine_similarity
         else:
@@ -69,10 +70,11 @@ class CBOW(nn.Module):
         context_embedding = self.vocab(word_list)
         context_embedding_sum = torch.sum(context_embedding, dim=1)
         embed_w_new = self.linear.weight[target_idx]
-        embed_b_new = self.linear.bias[target_idx]
         embed_w_new_transposed = embed_w_new.transpose(1, 2)
-        result = torch.bmm(context_embedding_sum.unsqueeze(1), embed_w_new_transposed).squeeze(1)
-        probs = result + embed_b_new
+        probs = torch.bmm(context_embedding_sum.unsqueeze(1), embed_w_new_transposed).squeeze(1)
+        if self.bias:
+            probs = probs + self.linear.bias[target_idx]
+
         return probs
 
     def forward1(self, word_list):
@@ -92,7 +94,7 @@ class CBOW(nn.Module):
         dataset = None
         if self.hs:
             self.hs = HierarchicalSoftmax(dict(Counter(text.tolist())))
-            self.linear = nn.Linear(self.embedding_size, len(self.hs.huffman_leaf), device=self.device)
+            self.linear = nn.Linear(self.embedding_size, len(self.hs.huffman_leaf), device=self.device, bias=self.bias)
             dataset = HSDataset(text, self.windows_size, len(self.vocab.vocab), self.hs)
         else:
             dataset = CBOWDataset(text, self.windows_size, len(self.vocab.vocab))
@@ -139,7 +141,7 @@ class CBOW(nn.Module):
                 probs = None
                 total_accuracy = None
                 if self.hs:
-                    probs = self.forward2(context, target_idx)
+                    probs = torch.sigmoid(self.forward2(context, target_idx))
                     total_accuracy = ((probs > 0.5).float() == target).sum().item() / self.hs.n / len(target) * 100
                 else:
                     probs = self.forward1(context)

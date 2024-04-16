@@ -1,18 +1,11 @@
 import os
 from model import CBOW
-import torch
-torch.manual_seed(123)
-if torch.cuda.is_available():
-    torch.cuda.manual_seed(123)
-    torch.cuda.manual_seed_all(123)
-torch.backends.cudnn.deterministic = True
-torch.backends.cudnn.benchmark = False
 
-dim = 210
-ws = 10
+dim = 300
+ws = 5
 batch_size = 3000
-num_epochs = 1
-lr = 1e-3
+num_epochs = 60
+lr = 5e-4
 device = 'cuda'
 
 f = open('./data/voina_i_mir.txt','r')
@@ -20,18 +13,24 @@ text = f.read()
 f.close()
 
 text = CBOW.tokenizer(text)
-model = CBOW(text, dim, ws, lr, device, True)
+
+model = CBOW(text, dim, ws, lr, device, hs=True, bias=True)
 hist = model.train(text, num_epochs, batch_size, os.cpu_count())
 
-print(model.k_Nearest("война", 5))
-print(model.k_Nearest("аполеон", 5))
-print(model.k_Nearest("Андрей", 5))
-print(model.k_Nearest("Наташа", 5))
-print(model.k_Nearest("мир", 5))
+nearest_num = 20
+# print(model.k_Nearest("война", nearest_num))
+# print(model.k_Nearest("Наполеон", nearest_num))
+# print(model.k_Nearest("Андрей", nearest_num))
+# print(model.k_Nearest("Наташа", nearest_num))
+# print(model.k_Nearest("мир", nearest_num))
 
-print(model.k_Nearest("война", 5, use_cosine=True))
-print(model.k_Nearest("аполеон", 5, use_cosine=True))
-print(model.k_Nearest("Андрей", 5, use_cosine=True))
-print(model.k_Nearest("Наташа", 5, use_cosine=True))
-print(model.k_Nearest("мир", 5, use_cosine=True))
+# print(model.k_Nearest("война", nearest_num, use_cosine=True))
+# print(model.k_Nearest("Наполеон", nearest_num, use_cosine=True))
+# print(model.k_Nearest("Андрей", nearest_num, use_cosine=True))
+# print(model.k_Nearest("Наташа", nearest_num, use_cosine=True))
+# print(model.k_Nearest("мир", nearest_num, use_cosine=True))
 model.save_embedding()
+
+for word in ['война', 'Наполеон', 'Андрей', 'Наташа', 'мир']:
+    print(model.k_Nearest(word, nearest_num, use_cosine=True))
+    print(model.k_Nearest(word, nearest_num, use_cosine=False))
