@@ -1,11 +1,13 @@
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from torch.utils.data import DataLoader
+from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
 import torch.nn as nn
 import torch
 import time
 import re
-from Vocab import build_vocab
+from model.Vocab import build_vocab
 from ..CBOW import CBOWDataset
 from ..SkipGram import SGDataset
 
@@ -156,5 +158,28 @@ class Word2Vec(nn.Module):
         fig.update_yaxes(title_text="Accuracy (%)", row=2, col=1)
         fig.show()
 
-    def plot_word(self, word):
-        idxs = 
+    def plot_word(self, words, embeddings=None, method='tsne', perplexity=10, pca_components=50):
+        if embeddings is None:
+            embeddings = self.W1[self.text_to_idxs(words)].detach().cpu()
+        embeddings = embeddings.numpy()
+
+        if method.lower() == 'tsne':
+            reducer = TSNE(n_components=2, perplexity=min(perplexity, len(words)-1), random_state=42)
+        elif method.lower() == 'pca':
+            reducer = PCA(n_components=2, pca_components=min(pca_components, len(words)-1))
+        else:
+            raise ValueError("Invalid method. Choose between 'tsne' and 'pca'.")
+
+        reduced_embeddings = reducer.fit_transform(embeddings)
+
+        fig = go.Figure()
+        for i, word in enumerate(words):
+            x, y = reduced_embeddings[i]
+            fig.add_trace(go.Scatter(x=[x], y=[y], mode='markers+text', text=[word], textposition="bottom center", name=word))
+
+        fig.update_layout(title=f'Embedding Visualization ({method.upper()})',
+                        xaxis_title='Dimension 1',
+                        yaxis_title='Dimension 2',
+                        )
+
+        fig.show()

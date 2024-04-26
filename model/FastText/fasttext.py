@@ -1,5 +1,5 @@
-from Word2Vec import Word2Vec
-from Vocab import build_vocab
+from model.Word2Vec import Word2Vec
+from model.Vocab import build_vocab
 import torch
 
 def fast_tokenizer(tokens, n_gram):
@@ -72,3 +72,7 @@ class FastText:
             return k_min_dist_word, embed
         
         return k_min_dist_word
+    
+    def plot_word(self, words, embeddings=None, method='tsne', perplexity=2, pca_components=50):
+        embeddings = torch.stack([self[word] for word in words])
+        self.model.plot_word(words, embeddings, method=method, perplexity=perplexity, pca_components=pca_components)
