@@ -1,1 +1,1 @@
-from .fasttext import fast_tokenizer, FastText
+from .fasttext import FastText

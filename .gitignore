@@ -1,4 +1,9 @@
-train*
-embed*
-print.txt
+# file
 Word Embedding.*
+print.txt
+
+# cash
+__pycache__*
+
+# pretrained model
+*.bin
