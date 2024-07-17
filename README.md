@@ -30,12 +30,21 @@
 
 ### Токенизаторы
 
+Реализация:
+
 1) [Реализация обычного токенизатора](./tokenizer/simple_tokenizer.py)  
 2) [Реализация токенизатора, разбивающего на n-gramm-ы (FastText)](./tokenizer/fasttexttokenizer.py)
 
+Тест и описание работы моей реализации:
+
+1) [Тест и описание обычного токенизатора](./test/test_tokenizer.ipynb)  
+2) [Тест и описание токенизатора, разбивающего на n-gramm-ы (FastText)](./test/test_fasttext.ipynb)
+
 ### Word2Vec
 
-[Общая реализация модели](./model/Word2Vec)
+Реализация: [Общая реализация модели](./model/Word2Vec)
+
+Тест и описание работы моей реализации: [Тест и описание работы Word2Vec](./test/test_wv.ipynb)
 
 #### CBOW (Continuous Bag of Words)
 [Реализация составления датасета для CBOW](./model/Word2Vec/wv_types/CBOW/cbow.py)
