@@ -1,0 +1,1 @@
+from .generat import TextGenerator

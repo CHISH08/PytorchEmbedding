@@ -62,16 +62,20 @@
 [Реализация модели](./model/ELMO/model.py)
 
 ### Transformers
-[Реализации](./model/Transformers/)
+Реализация: [Реализации Encoder, Decoder и их составляющих](./model/Transformers/)  
+
+![Архитектура transformers](present/transformer_architecture.png)
 
 #### BERT (Bidirectional Encoder Representations from Transformers)
-[Реализация модели](./model/Transformers/model.py)
+Реализация: [Реализация модели](./model/Transformers/model/bert.py)
+Тест и описание работы моей реализации (обычный токенизатор): [Тест и описание работы GPT](./test/test_gpt.ipynb)
+Тест и описание работы моей реализации (fasttext токенизатор): [Тест и описание работы N_Gram GPT](./test/test_n_gram_gpt.ipynb)
 
 #### GPT (Generative Pre-trained Transformer)
-[Реализация модели](./model/Transformers/model.py)
+Реализация: [Реализация модели](./model/Transformers/model/gpt.py)
 
 #### T5 (Text-to-Text Transfer Transformer)
-[Реализация модели](./model/Transformers/model.py)
+Реализация: [Реализация модели](./model/Transformers/t5.py)
 
 ## Цель
 
@@ -91,7 +95,7 @@
 ### Метрики
 ![alt text](present/metrics.png)
 ### Представление эмбеддингов на плоскости (TSNE)
-![alt text](present/image.png)
+![alt text](present/embed_visual.png)
 
 ## Дополнительно
 

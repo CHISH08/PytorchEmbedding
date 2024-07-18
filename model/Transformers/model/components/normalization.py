@@ -1,10 +1,10 @@
 from torch import nn
 import torch
 class LayerNormalization(nn.Module):
-    def __init__(self, word_size, epsilon=1e-5):
+    def __init__(self, embed_dim, epsilon=1e-5):
         super().__init__()
-        self.gamma = nn.Parameter(torch.ones(word_size))
-        self.beta = nn.Parameter(torch.zeros(word_size))
+        self.gamma = nn.Parameter(torch.ones(embed_dim))
+        self.beta = nn.Parameter(torch.zeros(embed_dim))
         self.epsilon = epsilon
 
     def forward(self, x):

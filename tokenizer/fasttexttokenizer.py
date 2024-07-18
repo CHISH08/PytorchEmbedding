@@ -14,6 +14,8 @@ class FastTextTokenizer(AutoTokenizer):
         return tokens
 
     def _word_to_n_grams(self, word: str):
+        if word in self.special_tokens:
+            return [word]
         word = '<' + word + '>'
         if len(word) < self.n_gram:
             return [word]

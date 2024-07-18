@@ -20,16 +20,16 @@ class PositionalEncoding(nn.Module):
         return x
 
 class DynamicalPositionalEncoding(nn.Module):
-    def __init__(self, word_size):
+    def __init__(self, embed_dim):
         super().__init__()
-        self.word_size = word_size
-        self.mult = -math.log(10000.0) / self.word_size
+        self.embed_dim = embed_dim
+        self.mult = -math.log(10000.0) / self.embed_dim
 
     def forward(self, x):
         seq_length = x.size(0)
-        pe = torch.zeros(seq_length, self.word_size).to(x.device)
+        pe = torch.zeros(seq_length, self.embed_dim).to(x.device)
         position = torch.arange(0, seq_length, dtype=torch.float).unsqueeze(1).to(x.device)
-        div_term = torch.exp(torch.arange(0, self.word_size, 2, dtype=torch.float) * self.mult).to(x.device)
+        div_term = torch.exp(torch.arange(0, self.embed_dim, 2, dtype=torch.float) * self.mult).to(x.device)
 
         pe[:, 0::2] = torch.sin(position * div_term)
         pe[:, 1::2] = torch.cos(position * div_term)

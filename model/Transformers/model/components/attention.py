@@ -2,11 +2,11 @@ from torch import nn
 import torch
 
 class AttentionLayer(nn.Module):
-    def __init__(self, word_size, keys_size, values_size):
+    def __init__(self, embed_dim, keys_size, values_size):
         super().__init__()
-        self.Wq = nn.Linear(word_size, keys_size)
-        self.Wk = nn.Linear(word_size, keys_size)
-        self.Wv = nn.Linear(word_size, values_size)
+        self.Wq = nn.Linear(embed_dim, keys_size)
+        self.Wk = nn.Linear(embed_dim, keys_size)
+        self.Wv = nn.Linear(embed_dim, values_size)
         self.keys_size = keys_size
     
     def forward(self, x):
@@ -19,17 +19,17 @@ class AttentionLayer(nn.Module):
         return Z
 
 class MultiHeadAttention(nn.Module):
-    def __init__(self, word_size, num_heads):
+    def __init__(self, embed_dim, num_heads):
         super().__init__()
-        assert word_size % num_heads == 0, "word_size must be divisible by num_heads"
+        assert embed_dim % num_heads == 0, "embed_dim must be divisible by num_heads"
 
         self.num_heads = num_heads
-        self.head_dim = word_size // num_heads
+        self.head_dim = embed_dim // num_heads
 
-        self.Wq = nn.Linear(word_size, word_size)
-        self.Wk = nn.Linear(word_size, word_size)
-        self.Wv = nn.Linear(word_size, word_size)
-        self.Wo = nn.Linear(word_size, word_size)
+        self.Wq = nn.Linear(embed_dim, embed_dim)
+        self.Wk = nn.Linear(embed_dim, embed_dim)
+        self.Wv = nn.Linear(embed_dim, embed_dim)
+        self.Wo = nn.Linear(embed_dim, embed_dim)
 
     def forward(self, x, y):
         batch_size = x.size(0)
@@ -52,17 +52,17 @@ class MultiHeadAttention(nn.Module):
         return O
 
 class MaskedMultiHeadAttention(nn.Module):
-    def __init__(self, word_size, num_heads):
+    def __init__(self, embed_dim, num_heads):
         super().__init__()
-        assert word_size % num_heads == 0, "word_size must be divisible by num_heads"
+        assert embed_dim % num_heads == 0, "embed_dim must be divisible by num_heads"
 
         self.num_heads = num_heads
-        self.head_dim = word_size // num_heads
+        self.head_dim = embed_dim // num_heads
 
-        self.Wq = nn.Linear(word_size, word_size)
-        self.Wk = nn.Linear(word_size, word_size)
-        self.Wv = nn.Linear(word_size, word_size)
-        self.Wo = nn.Linear(word_size, word_size)
+        self.Wq = nn.Linear(embed_dim, embed_dim)
+        self.Wk = nn.Linear(embed_dim, embed_dim)
+        self.Wv = nn.Linear(embed_dim, embed_dim)
+        self.Wo = nn.Linear(embed_dim, embed_dim)
 
     def forward(self, x):
         batch_size = x.size(0)

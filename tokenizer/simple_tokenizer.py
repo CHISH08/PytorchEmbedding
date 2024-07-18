@@ -1,16 +1,22 @@
-from nltk.tokenize import WordPunctTokenizer
 import pickle
+import re
+class CustomTokenizer:
+    @staticmethod
+    def tokenize(text):
+        pattern = re.compile(r'\[[A-Z]+\]|\w+|[^\w\s]')
+        return pattern.findall(text)
+
 class AutoTokenizer:
     def __init__(self, pretrained=None):
-        self._tokenizer = WordPunctTokenizer()
+        self._tokenizer = CustomTokenizer()
         self.special_tokens = {
-            '<UNK>': 0,
-            '<BOS>': 1,
-            '<EOS>': 2,
-            '<BOP>': 3,
-            '<EOP>': 4,
-            '<BOT>': 5,
-            '<EOT>': 6
+            '[UNK]': 0,
+            '[BOS]': 1,
+            '[EOS]': 2,
+            '[BOP]': 3,
+            '[EOP]': 4,
+            '[BOT]': 5,
+            '[EOT]': 6
         }
         self.vocab, self.words = self._from_pretrained(pretrained) if pretrained else (self.special_tokens.copy(), list(self.special_tokens.keys()))
 
@@ -22,13 +28,18 @@ class AutoTokenizer:
         self.vocab = self.vocab | add_vocab
         self.words.extend(add_tokens)
 
-    def encode(self, text: str, add_special_tokens=True):
+    def encode(self, text: str, add_special_tokens=False):
+        if add_special_tokens:
+            text = self._add_special_tokens(text)
+
         tokens = self._tokenize(text)
-        tokens_idx = [self.vocab.get(token, self.vocab['<UNK>']) for token in tokens]
+        tokens_idx = [self.vocab.get(token, self.vocab['[UNK]']) for token in tokens]
         return tokens_idx
 
-    def decode(self, token_idxs: list[int], join=False):
+    def decode(self, token_idxs: list[int], join=False, add_special_tokens=False):
         tokens = [self.words[idx] for idx in token_idxs]
+        if not add_special_tokens:
+            tokens = [token for token in tokens if token not in self.special_tokens]
         text = self._tokens_join(tokens, join)
         return text
 
@@ -53,3 +64,19 @@ class AutoTokenizer:
             vocab = pickle.load(f)
         words = list(vocab.keys())
         return vocab, words
+
+    @staticmethod
+    def _add_special_tokens(text):
+        paragraphs = text.split('\n')
+        sentence_endings = re.compile(r'(?<=[.!?])\s+|\.\.\.')
+
+        tokenized_paragraphs = []
+        for paragraph in paragraphs:
+            paragraph_sentences = sentence_endings.split(paragraph)
+            paragraph_sentences = [f'[BOS] {sentence.strip()} [EOS]' for sentence in paragraph_sentences if sentence.strip()]
+            tokenized_paragraph = ' '.join(paragraph_sentences)
+            tokenized_paragraphs.append(f'[BOP] {tokenized_paragraph} [EOP]')
+        
+        processed_text = '\n'.join(tokenized_paragraphs)
+        return processed_text
+    

@@ -2,14 +2,14 @@ from torch import nn
 from .components import MultiHeadAttention, LayerNormalization, Add, FeedForward, DynamicalPositionalEncoding, MaskedMultiHeadAttention
 
 class DecoderBlock(nn.Module):
-    def __init__(self, word_size, hidden_size, num_heads):
+    def __init__(self, embed_dim, hidden_size, num_heads):
         super().__init__()
-        self.mask = MaskedMultiHeadAttention(word_size, num_heads)
-        self.attent = MultiHeadAttention(word_size, num_heads)
-        self.ffn = FeedForward(word_size, hidden_size)
-        self.norm1 = LayerNormalization(word_size)
-        self.norm2 = LayerNormalization(word_size)
-        self.norm3 = LayerNormalization(word_size)
+        self.mask = MaskedMultiHeadAttention(embed_dim, num_heads)
+        self.attent = MultiHeadAttention(embed_dim, num_heads)
+        self.ffn = FeedForward(embed_dim, hidden_size)
+        self.norm1 = LayerNormalization(embed_dim)
+        self.norm2 = LayerNormalization(embed_dim)
+        self.norm3 = LayerNormalization(embed_dim)
         self.add1 = Add(self.norm1)
         self.add2 = Add(self.norm2)
         self.add3 = Add(self.norm3)
@@ -26,11 +26,11 @@ class DecoderBlock(nn.Module):
         return x
 
 class Decoder(nn.Module):
-    def __init__(self, word_size, hidden_size, num_heads, num_layers):
+    def __init__(self, embed_dim, hidden_size, num_heads, num_layers):
         super().__init__()
-        self.posit = DynamicalPositionalEncoding(word_size)
+        self.posit = DynamicalPositionalEncoding(embed_dim)
         self.layers = nn.ModuleList(
-            [DecoderBlock(word_size, hidden_size, num_heads) for _ in range(num_layers)]
+            [DecoderBlock(embed_dim, hidden_size, num_heads) for _ in range(num_layers)]
         )
 
     def forward(self, x, encoder_output, memory_key_padding_mask=None):
