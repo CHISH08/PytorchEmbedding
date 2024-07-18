@@ -62,17 +62,18 @@
 [Реализация модели](./model/ELMO/model.py)
 
 ### Transformers
-Реализация: [Реализации Encoder, Decoder и их составляющих](./model/Transformers/)  
+Реализация: [Реализации Encoder, Decoder и их составляющих](./model/Transformers/model)  
 
 ![Архитектура transformers](present/transformer_architecture.png)
 
 #### BERT (Bidirectional Encoder Representations from Transformers)
-Реализация: [Реализация модели](./model/Transformers/model/bert.py)  
+Реализация: [Реализация модели](./model/Transformers/bert.py)
+
+#### GPT (Generative Pre-trained Transformer)
+Реализация: [Реализация модели](./model/Transformers/gpt.py)  
 Тест и описание работы моей реализации (обычный токенизатор): [Тест и описание работы GPT](./test/test_gpt.ipynb)  
 Тест и описание работы моей реализации (fasttext токенизатор): [Тест и описание работы N_Gram GPT](./test/test_n_gram_gpt.ipynb)  
 
-#### GPT (Generative Pre-trained Transformer)
-Реализация: [Реализация модели](./model/Transformers/model/gpt.py)
 
 #### T5 (Text-to-Text Transfer Transformer)
 Реализация: [Реализация модели](./model/Transformers/t5.py)
