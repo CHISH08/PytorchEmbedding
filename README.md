@@ -67,9 +67,9 @@
 ![Архитектура transformers](present/transformer_architecture.png)
 
 #### BERT (Bidirectional Encoder Representations from Transformers)
-Реализация: [Реализация модели](./model/Transformers/model/bert.py)
-Тест и описание работы моей реализации (обычный токенизатор): [Тест и описание работы GPT](./test/test_gpt.ipynb)
-Тест и описание работы моей реализации (fasttext токенизатор): [Тест и описание работы N_Gram GPT](./test/test_n_gram_gpt.ipynb)
+Реализация: [Реализация модели](./model/Transformers/model/bert.py)  
+Тест и описание работы моей реализации (обычный токенизатор): [Тест и описание работы GPT](./test/test_gpt.ipynb)  
+Тест и описание работы моей реализации (fasttext токенизатор): [Тест и описание работы N_Gram GPT](./test/test_n_gram_gpt.ipynb)  
 
 #### GPT (Generative Pre-trained Transformer)
 Реализация: [Реализация модели](./model/Transformers/model/gpt.py)
