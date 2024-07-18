@@ -72,7 +72,7 @@
 #### GPT (Generative Pre-trained Transformer)
 Реализация: [Реализация модели](./model/Transformers/gpt.py)  
 Тест и описание работы моей реализации (обычный токенизатор): [Тест и описание работы GPT](./test/test_gpt.ipynb)  
-Тест и описание работы моей реализации (fasttext токенизатор): [Тест и описание работы N_Gram GPT](./test/test_n_gram_gpt.ipynb)  
+Тест и описание работы моей реализации (fasttext токенизатор): [Тест и описание работы N_Gram GPT](./test/test_gpt_n_gram.ipynb)  
 
 
 #### T5 (Text-to-Text Transfer Transformer)
