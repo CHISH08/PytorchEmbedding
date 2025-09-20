@@ -14,7 +14,6 @@
 
 ### Модели для обучения эмбеддингов слов и текста одновременно:
 
-- ELMO
 - Tranformers
     1) BERT (Encoder)
     2) GPT (Decoder)
@@ -57,9 +56,6 @@
 
 ### GloVe (Global Vectors)
 [Реализация модели](./model/GloVe/model.py)
-
-### ELMO (Embeddings from Language Models)
-[Реализация модели](./model/ELMO/model.py)
 
 ### Transformers
 Реализация: [Реализации Encoder, Decoder и их составляющих](./model/Transformers/model)  
